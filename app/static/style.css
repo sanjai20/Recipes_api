@@ -1,0 +1,36 @@
+body {
+    font-family: Arial;
+    margin: 40px;
+    background: #f4f6f8;
+}
+
+h1 {
+    text-align: center;
+}
+
+.filters {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #0077ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin: 10px auto;
+    width: 60%;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
