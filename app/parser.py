@@ -6,8 +6,16 @@ from .models import Recipe
 from .database import SessionLocal
 
 
-# ✅ ALWAYS resolve project root safely
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# ✅ Path relative to THIS file (cloud-safe)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_PATH = os.path.join(
+    CURRENT_DIR,
+    "..",
+    "US_recipes_null.Pdf.json"
+)
+
+DATA_PATH = os.path.abspath(DATA_PATH)
 
 
 def clean_number(value):
@@ -18,19 +26,16 @@ def clean_number(value):
     return value
 
 
-def load_recipes(json_filename: str):
+def load_recipes(json_filename: str = None):
 
     db: Session = SessionLocal()
 
-    # ✅ FULL ABSOLUTE PATH (Render safe)
-    file_path = os.path.join(BASE_DIR, json_filename)
+    print("📂 Loading JSON from:", DATA_PATH)
 
-    print("📂 Looking for file at:", file_path)
+    if not os.path.exists(DATA_PATH):
+        raise Exception(f"JSON file not found at {DATA_PATH}")
 
-    if not os.path.exists(file_path):
-        raise Exception(f"JSON file not found at {file_path}")
-
-    with open(file_path, "r", encoding="utf-8") as file:
+    with open(DATA_PATH, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     inserted = 0
