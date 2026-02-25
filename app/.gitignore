@@ -4,7 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Virtual environment
+# Virtual Environment
 venv/
 .env
 
@@ -16,11 +16,5 @@ venv/
 .DS_Store
 Thumbs.db
 
-# VSCode
+# VS Code
 .vscode/
-
-# Logs
-*.log
-
-# Environment variables
-.env
