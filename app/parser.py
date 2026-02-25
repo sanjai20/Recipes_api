@@ -6,47 +6,36 @@ from .models import Recipe
 from .database import SessionLocal
 
 
-# --------------------------------------------------
-# PROJECT ROOT PATH (works locally + Render cloud)
-# --------------------------------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# ✅ ALWAYS resolve project root safely
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
-# --------------------------------------------------
-# helper function
-# --------------------------------------------------
 def clean_number(value):
-    """
-    Convert NaN or invalid numbers into NULL
-    (assessment requirement)
-    """
     if value is None:
         return None
-
     if isinstance(value, float) and math.isnan(value):
         return None
-
     return value
 
 
-# --------------------------------------------------
-# main parser
-# --------------------------------------------------
 def load_recipes(json_filename: str):
 
     db: Session = SessionLocal()
 
-    # ✅ build absolute path safely
+    # ✅ FULL ABSOLUTE PATH (Render safe)
     file_path = os.path.join(BASE_DIR, json_filename)
 
-    # ✅ open dataset
+    print("📂 Looking for file at:", file_path)
+
+    if not os.path.exists(file_path):
+        raise Exception(f"JSON file not found at {file_path}")
+
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     inserted = 0
 
     for item in data.values():
-
         recipe = Recipe(
             cuisine=item.get("cuisine"),
             title=item.get("title"),
