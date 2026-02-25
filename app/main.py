@@ -1,31 +1,36 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from .routers import recipes
-from .database import engine
-from .models import Base
+from .database import Base, engine
 
-# --------------------------------------------------
-# Create FastAPI app
-# --------------------------------------------------
-app = FastAPI(title="Recipes API")
-
-# ✅ Create database tables automatically
+# create tables
 Base.metadata.create_all(bind=engine)
 
-# --------------------------------------------------
-# Routers
-# --------------------------------------------------
+app = FastAPI(title="Recipes API")
+
+# include API router
 app.include_router(recipes.router)
 
-# --------------------------------------------------
-# Static & Templates (UI)
-# --------------------------------------------------
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+# templates
 templates = Jinja2Templates(directory="app/templates")
 
+# static files (CSS)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
+
+# ---------- API HEALTH ----------
 @app.get("/")
 def home():
     return {"message": "Recipes API Running"}
+
+
+# ---------- UI PAGE ----------
+@app.get("/ui", response_class=HTMLResponse)
+def ui(request: Request):
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )

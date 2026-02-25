@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Recipe Search</title>
+    <title>Recipes Explorer</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
 
-<h1>🍽 Recipe Search</h1>
+<div class="container">
 
-<div class="filters">
-    <input id="title" placeholder="Search recipe..." />
-    <input id="rating" type="number" placeholder="Min Rating" />
-    <input id="time" type="number" placeholder="Max Time" />
-    <input id="calories" type="number" placeholder="Max Calories" />
+    <h1>🍽 Recipes Explorer</h1>
 
-    <button onclick="searchRecipes()">Search</button>
+    <!-- SEARCH BAR -->
+    <div class="search-box">
+        <input type="text" id="title" placeholder="Search recipe title...">
+        <input type="number" id="rating" placeholder="Min rating">
+        <button onclick="searchRecipes()">Search</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results"></div>
+
 </div>
 
-<div id="results"></div>
-
 <script>
+
 async function searchRecipes() {
 
     const title = document.getElementById("title").value;
     const rating = document.getElementById("rating").value;
-    const time = document.getElementById("time").value;
-    const calories = document.getElementById("calories").value;
 
-    let url = `/api/recipes/search?page=1&limit=10`;
+    let url = `/api/recipes/search?`;
 
-    if(title) url += `&title=${title}`;
-    if(rating) url += `&min_rating=${rating}`;
-    if(time) url += `&max_time=${time}`;
-    if(calories) url += `&max_calories=${calories}`;
+    if(title) url += `title=${title}&`;
+    if(rating) url += `min_rating=${rating}&`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+    const response = await fetch(url);
+    const data = awaitrat response.json();
 
-    const container = document.getElementById("results");
-    container.innerHTML = "";
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
 
-    data.data.forEach(recipe => {
+    data.forEach(recipe => {
 
-        const card = `
-        <div class="card">
-            <h3>${recipe.title}</h3>
-            <p>⭐ Rating: ${recipe.rating ?? "N/A"}</p>
-            <p>⏱ Time: ${recipe.total_time ?? "N/A"} mins</p>
-            <p>🍴 Cuisine: ${recipe.cuisine ?? "N/A"}</p>
-        </div>
+        resultsDiv.innerHTML += `
+            <div class="card">
+                <h3>${recipe.title}</h3>
+                <p><b>Cuisine:</b> ${recipe.cuisine || "N/A"}</p>
+                <p><b>Rating:</b> ⭐ ${recipe.rating ?? "N/A"}</p>
+                <p>${recipe.description || ""}</p>
+            </div>
         `;
-
-        container.innerHTML += card;
     });
 }
+
 </script>
 
 </body>
