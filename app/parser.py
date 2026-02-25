@@ -5,13 +5,16 @@ from sqlalchemy.orm import Session
 from .models import Recipe
 from .database import SessionLocal
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-json_path = os.path.join(BASE_DIR, "US_recipes_null.Pdf.json")
 
-with open(json_path, "r", encoding="utf-8") as file:
-    data = json.load(file)
+# --------------------------------------------------
+# PROJECT ROOT PATH (works locally + Render cloud)
+# --------------------------------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# ---------- helper function ----------
+
+# --------------------------------------------------
+# helper function
+# --------------------------------------------------
 def clean_number(value):
     """
     Convert NaN or invalid numbers into NULL
@@ -26,11 +29,18 @@ def clean_number(value):
     return value
 
 
-# ---------- main parser ----------
-def load_recipes(json_path: str):
+# --------------------------------------------------
+# main parser
+# --------------------------------------------------
+def load_recipes(json_filename: str):
+
     db: Session = SessionLocal()
 
-    with open(json_path, "r", encoding="utf-8") as file:
+    # ✅ build absolute path safely
+    file_path = os.path.join(BASE_DIR, json_filename)
+
+    # ✅ open dataset
+    with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     inserted = 0
