@@ -1,42 +1,63 @@
-# 🍲 Recipes API — FastAPI Backend
+# 🍽 Recipes API & Dashboard
 
-A high-performance REST API built using **FastAPI** for managing and searching recipe data with filtering, pagination, and structured database storage.
+A full-stack Recipe Data API built with **FastAPI**, **SQLite**, and a lightweight **HTML/CSS dashboard UI**.
 
----
-
-## 🚀 Features
-
-✅ Load large recipe dataset (8,000+ recipes)
-✅ Pagination support
-✅ Advanced search filters
-✅ SQLite database integration
-✅ Clean modular architecture
-✅ Swagger API documentation
-✅ Production-style FastAPI structure
+This project parses a large JSON dataset of recipes, stores it in a database, and exposes REST APIs with filtering, pagination, and search capabilities. A simple dashboard UI allows users to explore recipes visually.
 
 ---
 
-## 🧠 Tech Stack
+# 🚀 Features
 
-* **FastAPI**
-* **Python 3.10**
-* **SQLAlchemy**
-* **SQLite**
-* **Uvicorn**
-* **Jinja2**
-* **REST API Design**
+### Backend API
+- Parse recipe JSON dataset
+- Store structured data in SQLite database
+- REST API built using FastAPI
+- Pagination support
+- Search & filtering
+- Sorted by rating
+- Handles NaN values safely
+
+### Frontend Dashboard
+- Interactive recipe table
+- Star rating display ⭐
+- Search filters
+- Pagination controls
+- Click row to view recipe details
+- Nutrition information panel
+- Responsive UI
 
 ---
 
-## 📂 Project Structure
+# 🛠 Tech Stack
+
+Backend
+- FastAPI
+- SQLAlchemy
+- SQLite
+- Uvicorn
+
+Frontend
+- HTML
+- CSS
+- JavaScript
+
+---
+
+# 📂 Project Structure
 
 ```
 backend/
 │
 ├── app/
 │   ├── routers/
+│   │   └── recipes.py
+│   │
 │   ├── templates/
+│   │   └── index.html
+│   │
 │   ├── static/
+│   │   └── style.css
+│   │
 │   ├── models.py
 │   ├── database.py
 │   ├── crud.py
@@ -44,66 +65,92 @@ backend/
 │   └── main.py
 │
 ├── requirements.txt
-└── US_recipes_null.Pdf.json
+├── US_recipes_null.Pdf.json
+└── README.md
 ```
 
 ---
 
-## ⚙️ Setup Instructions
+# ⚙️ Installation & Setup
 
-### 1️⃣ Clone Repository
+### 1️⃣ Clone the repository
 
-```bash
+```
 git clone https://github.com/sanjai20/Recipes_api.git
 cd Recipes_api
 ```
 
-### 2️⃣ Create Virtual Environment
+### 2️⃣ Create virtual environment
 
-```bash
+```
 python -m venv venv
+```
+
+Activate it
+
+Windows
+
+```
 venv\Scripts\activate
 ```
 
-### 3️⃣ Install Dependencies
+Mac/Linux
 
-```bash
-pip install -r requirements.txt
 ```
-
-### 4️⃣ Run Server
-
-```bash
-python -m uvicorn app.main:app --reload
+source venv/bin/activate
 ```
 
 ---
 
-## 📖 API Documentation
+### 3️⃣ Install dependencies
 
-Open in browser:
+```
+pip install -r requirements.txt
+```
+
+---
+
+### 4️⃣ Run the server
+
+```
+python -m uvicorn app.main:app --reload
+```
+
+Server will run at
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# 🌐 Application URLs
+
+### Dashboard UI
+
+```
+http://127.0.0.1:8000
+```
+
+### API Documentation
 
 ```
 http://127.0.0.1:8000/docs
 ```
 
-Interactive Swagger UI included.
-
 ---
 
-## 🔍 API Endpoints
+# 📡 API Endpoints
 
-### Get Recipes (Pagination)
+### Get All Recipes
 
 ```
 GET /api/recipes?page=1&limit=10
 ```
 
-### Load Dataset
+Returns paginated recipes sorted by rating.
 
-```
-POST /api/recipes/load-data
-```
+---
 
 ### Search Recipes
 
@@ -111,38 +158,69 @@ POST /api/recipes/load-data
 GET /api/recipes/search
 ```
 
-Filters supported:
+Query Parameters
 
-* title
-* cuisine
-* min_rating
-* max_time
+| Parameter | Description |
+|--------|-------------|
+| title | Search by recipe title |
+| cuisine | Filter by cuisine |
+| min_rating | Minimum rating |
+| max_time | Maximum total time |
+| calories | Filter by calories |
 
----
+Example
 
-## 📊 Dataset
-
-Contains **8000+ recipes** including:
-
-* Recipe title
-* Cuisine type
-* Cooking time
-* Rating
-* Nutrition information
+```
+/api/recipes/search?title=pie&min_rating=4
+```
 
 ---
 
-## 👨‍💻 Author
+# 🖥 UI Features
 
-**Sanjai**
-Cybersecurity Student | Backend Developer
+The dashboard provides:
+
+- Recipe table view
+- Star rating visualization
+- Row click to view detailed recipe
+- Nutrition information panel
+- Search filters
+- Pagination (15 / 25 / 50 results)
+- No-results fallback screen
 
 ---
 
-## ⭐ Future Improvements
+# 📊 Dataset
 
-* Docker support
-* PostgreSQL migration
-* Authentication (JWT)
-* Cloud deployment (Render / AWS)
-* Frontend dashboard
+The project uses the provided recipe dataset:
+
+```
+US_recipes_null.Pdf.json
+```
+
+During parsing:
+
+- NaN values are converted to `NULL`
+- Nutrients are stored as JSON
+
+---
+
+# 👨‍💻 Author
+
+Sanjai Prashad
+
+GitHub  
+https://github.com/sanjai20
+
+---
+
+# 📌 Notes
+
+This project was developed as part of a **Recipe Data Collection and API Development Assessment**.
+
+It demonstrates:
+
+- Backend API design
+- Database modeling
+- Data parsing
+- Frontend integration
