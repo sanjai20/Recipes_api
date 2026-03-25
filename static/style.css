@@ -1,36 +1,208 @@
-body {
-    font-family: Arial;
-    margin: 40px;
-    background: #f4f6f8;
+body{
+font-family: "Segoe UI", Arial, sans-serif;
+margin:0;
+background:#f3f6fb;
+color:#333;
 }
 
-h1 {
-    text-align: center;
+/* HEADER */
+
+h1{
+text-align:center;
+padding:25px;
+margin:0;
+background:white;
+box-shadow:0 2px 6px rgba(0,0,0,0.05);
 }
 
-.filters {
-    text-align: center;
-    margin-bottom: 20px;
+/* SEARCH BAR */
+
+.filters{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:10px;
+padding:25px;
+background:white;
+margin:30px auto;
+width:90%;
+max-width:1100px;
+border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.08);
 }
 
-input {
-    padding: 10px;
-    margin: 5px;
+.filters input{
+padding:10px;
+border:1px solid #ddd;
+border-radius:6px;
+min-width:150px;
+font-size:14px;
 }
 
-button {
-    padding: 10px 20px;
-    background: #0077ff;
-    color: white;
-    border: none;
-    cursor: pointer;
+.filters input:focus{
+outline:none;
+border-color:#1a73e8;
+box-shadow:0 0 3px rgba(26,115,232,0.3);
 }
 
-.card {
-    background: white;
-    padding: 15px;
-    margin: 10px auto;
-    width: 60%;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+/* BUTTON */
+
+button{
+padding:10px 18px;
+background:#1a73e8;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:600;
+transition:0.2s;
+}
+
+button:hover{
+background:#155ec0;
+}
+
+/* PAGINATION */
+
+.pagination{
+width:90%;
+max-width:1100px;
+margin:auto;
+margin-bottom:10px;
+font-size:14px;
+}
+
+/* TABLE */
+
+table{
+width:90%;
+max-width:1100px;
+margin:20px auto;
+border-collapse:collapse;
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
+}
+
+th{
+background:#1a73e8;
+color:white;
+font-weight:600;
+text-align:left;
+padding:14px;
+}
+
+td{
+padding:12px 14px;
+border-bottom:1px solid #eee;
+}
+
+tr:hover{
+background:#f5f9ff;
+cursor:pointer;
+transition:0.15s;
+}
+
+/* NO RESULT */
+
+#noResults{
+text-align:center;
+margin:40px auto;
+width:90%;
+max-width:1100px;
+}
+
+.no-results-card{
+background:white;
+border-radius:14px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
+padding:40px 24px;
+color:#5f6b7a;
+}
+
+.no-results-card h2{
+margin:0 0 10px;
+color:#1f2937;
+}
+
+.no-results-card p{
+margin:0;
+font-size:16px;
+}
+
+.hidden{
+display:none;
+}
+
+/* DRAWER */
+
+.drawer{
+position:fixed;
+right:0;
+top:0;
+width:380px;
+height:100%;
+background:white;
+border-left:1px solid #ddd;
+padding:25px;
+display:none;
+overflow:auto;
+box-shadow:-3px 0 12px rgba(0,0,0,0.1);
+}
+
+.drawer h2{
+margin-top:0;
+}
+
+.drawer h3{
+color:#1a73e8;
+}
+
+/* NUTRITION TABLE */
+
+.nutrition{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+}
+
+.nutrition td{
+border:1px solid #eee;
+padding:8px;
+font-size:14px;
+}
+
+/* CLOSE BUTTON */
+
+.drawer button{
+margin-top:20px;
+background:#e53935;
+}
+
+.drawer button:hover{
+background:#c62828;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.filters{
+flex-direction:column;
+align-items:center;
+}
+
+.filters input{
+width:90%;
+}
+
+table{
+font-size:14px;
+}
+
+.drawer{
+width:100%;
+}
+
 }

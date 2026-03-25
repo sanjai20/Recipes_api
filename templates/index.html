@@ -1,60 +1,257 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Recipe Search</title>
-    <link rel="stylesheet" href="/static/style.css">
+
+<title>Recipes Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+
 </head>
 
 <body>
 
-<h1>🍽 Recipe Search</h1>
+<h1>Recipes Dashboard</h1>
 
 <div class="filters">
-    <input id="title" placeholder="Search recipe..." />
-    <input id="rating" type="number" placeholder="Min Rating" />
-    <input id="time" type="number" placeholder="Max Time" />
-    <input id="calories" type="number" placeholder="Max Calories" />
 
-    <button onclick="searchRecipes()">Search</button>
+<input id="title" placeholder="Search title">
+<input id="cuisine" placeholder="Cuisine">
+<input id="rating" type="number" placeholder="Min Rating">
+<input id="time" type="number" placeholder="Max Total Time">
+<input id="calories" type="number" placeholder="Max Calories">
+
+<button onclick="searchRecipes()">Search</button>
+
 </div>
 
-<div id="results"></div>
+<div class="pagination">
+
+<label>Results per page:</label>
+
+<select id="limit" onchange="loadRecipes()">
+<option value="15">15</option>
+<option value="25">25</option>
+<option value="50">50</option>
+</select>
+
+</div>
+
+
+<table id="recipesTable">
+
+<thead>
+<tr>
+<th>Title</th>
+<th>Cuisine</th>
+<th>Rating</th>
+<th>Total Time</th>
+<th>Serves</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+
+<div id="noResults" class="hidden">
+<div class="no-results-card">
+<h2>No recipes found</h2>
+<p>Try changing the title, cuisine, rating, time, or calories filters.</p>
+</div>
+</div>
+
+
+<div id="drawer" class="drawer">
+
+<div id="drawerContent"></div>
+
+<button onclick="closeDrawer()">Close</button>
+
+</div>
+
 
 <script>
-async function searchRecipes() {
 
-    const title = document.getElementById("title").value;
-    const rating = document.getElementById("rating").value;
-    const time = document.getElementById("time").value;
-    const calories = document.getElementById("calories").value;
+let page = 1;
 
-    let url = `/api/recipes/search?page=1&limit=10`;
 
-    if(title) url += `&title=${title}`;
-    if(rating) url += `&min_rating=${rating}`;
-    if(time) url += `&max_time=${time}`;
-    if(calories) url += `&max_calories=${calories}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+async function loadRecipes(){
 
-    const container = document.getElementById("results");
-    container.innerHTML = "";
+let limit = document.getElementById("limit").value;
 
-    data.data.forEach(recipe => {
+let res = await fetch(`/api/recipes?page=${page}&limit=${limit}`);
 
-        const card = `
-        <div class="card">
-            <h3>${recipe.title}</h3>
-            <p>⭐ Rating: ${recipe.rating ?? "N/A"}</p>
-            <p>⏱ Time: ${recipe.total_time ?? "N/A"} mins</p>
-            <p>🍴 Cuisine: ${recipe.cuisine ?? "N/A"}</p>
-        </div>
-        `;
+let data = await res.json();
 
-        container.innerHTML += card;
-    });
+renderTable(data.data || data);
+
 }
+
+
+
+async function searchRecipes(){
+
+let title = document.getElementById("title").value;
+let cuisine = document.getElementById("cuisine").value;
+let rating = document.getElementById("rating").value;
+let time = document.getElementById("time").value;
+let calories = document.getElementById("calories").value;
+
+let params = new URLSearchParams();
+
+if(title) params.append("title", title);
+if(cuisine) params.append("cuisine", cuisine);
+if(rating) params.append("min_rating", rating);
+if(time) params.append("max_time", time);
+if(calories) params.append("calories", calories);
+
+let url = `/api/recipes/search?${params.toString()}`;
+
+let res = await fetch(url);
+
+if(!res.ok){
+
+console.error("Search API error");
+return;
+
+}
+
+let data = await res.json();
+
+renderTable(data.data || data);
+
+}
+
+
+
+function renderTable(data){
+
+let table = document.querySelector("#recipesTable tbody");
+let tableElement = document.getElementById("recipesTable");
+let noResults = document.getElementById("noResults");
+
+table.innerHTML = "";
+
+if(!data || data.length === 0){
+
+tableElement.classList.add("hidden");
+noResults.classList.remove("hidden");
+return;
+
+}
+
+tableElement.classList.remove("hidden");
+noResults.classList.add("hidden");
+
+
+data.forEach(recipe => {
+
+let row = document.createElement("tr");
+
+row.innerHTML = `
+<td>${truncate(recipe.title)}</td>
+<td>${recipe.cuisine}</td>
+<td>${stars(recipe.rating)}</td>
+<td>${recipe.total_time || "-"}</td>
+<td>${recipe.serves || "-"}</td>
+`;
+
+row.onclick = () => showDetails(recipe);
+
+table.appendChild(row);
+
+});
+
+}
+
+
+
+function stars(rating){
+
+if(!rating) return "-";
+
+let full = Math.round(rating);
+
+let s = "";
+
+for(let i=0;i<5;i++){
+
+if(i<full) s+="⭐";
+else s+="☆";
+
+}
+
+return s;
+
+}
+
+
+
+function truncate(text){
+
+if(!text) return "";
+
+if(text.length > 35)
+
+return text.substring(0,35)+"...";
+
+return text;
+
+}
+
+
+
+function showDetails(recipe){
+
+let drawer = document.getElementById("drawer");
+
+drawer.style.display = "block";
+
+document.getElementById("drawerContent").innerHTML = `
+
+<h2>${recipe.title}</h2>
+
+<h3>${recipe.cuisine}</h3>
+
+<p><b>Description:</b> ${recipe.description || "-"}</p>
+
+<p><b>Total Time:</b> ${recipe.total_time || "-"}</p>
+<p><b>Prep Time:</b> ${recipe.prep_time || "-"}</p>
+<p><b>Cook Time:</b> ${recipe.cook_time || "-"}</p>
+
+<h3>Nutrition</h3>
+
+<table class="nutrition">
+
+<tr><td>Calories</td><td>${recipe.nutrients?.calories || "-"}</td></tr>
+<tr><td>Carbohydrate</td><td>${recipe.nutrients?.carbohydrateContent || "-"}</td></tr>
+<tr><td>Cholesterol</td><td>${recipe.nutrients?.cholesterolContent || "-"}</td></tr>
+<tr><td>Fiber</td><td>${recipe.nutrients?.fiberContent || "-"}</td></tr>
+<tr><td>Protein</td><td>${recipe.nutrients?.proteinContent || "-"}</td></tr>
+<tr><td>Saturated Fat</td><td>${recipe.nutrients?.saturatedFatContent || "-"}</td></tr>
+<tr><td>Sodium</td><td>${recipe.nutrients?.sodiumContent || "-"}</td></tr>
+<tr><td>Sugar</td><td>${recipe.nutrients?.sugarContent || "-"}</td></tr>
+<tr><td>Fat</td><td>${recipe.nutrients?.fatContent || "-"}</td></tr>
+
+</table>
+
+`;
+
+}
+
+
+
+function closeDrawer(){
+
+document.getElementById("drawer").style.display = "none";
+
+}
+
+
+
+loadRecipes();
+
 </script>
 
 </body>
